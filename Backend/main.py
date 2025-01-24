@@ -125,7 +125,7 @@ def generate():
         it = 15
 
         # Defines the minimum duration of each clip
-        min_dur = 10
+        min_dur = 5
 
         # Loop through all search terms,
         # and search for a video of the given search term

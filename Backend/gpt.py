@@ -7,6 +7,7 @@
 import re
 import os
 import json
+import requests
 
 from g4f.client import Client
 from termcolor import colored
@@ -250,7 +251,20 @@ def generate_metadata(video_subject: str, script: str, ai_model: str) -> Tuple[s
     return title, description, keywords
 
 
-def generate_image(self, prompt: str) -> str:
+def download_image(url, save_path):
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(save_path, 'wb') as file:
+            for chunk in response.iter_content(1024):
+                file.write(chunk)
+        print(f"Image successfully downloaded: {save_path}")
+        return True
+    else:
+        print(f"Failed to download image.")
+        return False
+
+
+def generate_image(prompt: str) -> str:
     """
     Generates an AI Image based on the given prompt.
 
@@ -260,45 +274,17 @@ def generate_image(self, prompt: str) -> str:
     Returns:
         path (str): The path to the generated image.
     """
-    ok = False
-    while ok == False:
-        client = Client()
-        response = client.images.generate(
-            model="flux",
-            prompt="a white siamese cat",
-            response_format="url"
-        )
+    client = Client()
+    response = client.images.generate(
+        model="flux",
+        prompt=prompt,
+        response_format="url"
+    )
 
-        print(f"Generated image URL: {response.data[0].url}")
-        
-        # url = f"https://hercai.onrender.com/prodia/text2image?prompt={prompt}"
+    print(f"Generated image URL: {response.data[0].url}")
 
-        # r = requests.get(url)
-        # parsed = r.json()
+    image_path = "../tempImp/image.jpeg"
 
-        # if "url" not in parsed or not parsed.get("url"):
-        #     # Retry
-        #     if get_verbose():
-        #         info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
-        #     ok = False
-        # else:
-        #     ok = True
-        #     image_url = parsed["url"]
-
-        #     if get_verbose():
-        #         info(f" => Generated Image: {image_url}")
-
-        #     image_path = os.path.join(ROOT_DIR, ".mp", str(uuid4()) + ".png")
-                
-        #     with open(image_path, "wb") as image_file:
-        #         # Write bytes to file
-        #         image_r = requests.get(image_url)
-
-        #         image_file.write(image_r.content)
-
-        #     if get_verbose():
-        #         info(f" => Wrote Image to \"{image_path}\"\n")
-
-        #     self.images.append(image_path)
-                
-        #     return image_path
+    # Download the image
+    if download_image(response.data[0].url, image_path):
+        return image_path
