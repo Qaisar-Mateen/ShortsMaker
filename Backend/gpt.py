@@ -6,10 +6,7 @@
 
 import re
 import os
-import g4f
 import json
-# import openai
-# import google.generativeai as genai
 
 from g4f.client import Client
 from termcolor import colored
@@ -18,12 +15,6 @@ from typing import Tuple, List
 
 # Load environment variables
 load_dotenv("../.env")
-
-# Set environment variables
-# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-# openai.api_key = OPENAI_API_KEY
-# GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-# genai.configure(api_key=GOOGLE_API_KEY)
 
 
 def generate_response(prompt: str, ai_model: str) -> str:
@@ -46,7 +37,6 @@ def generate_response(prompt: str, ai_model: str) -> str:
         client = Client()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            # provider=g4f.Provider.You, 
             messages=[{"role": "user", "content": prompt}],
             web_search=False
         ).choices[0].message.content
@@ -91,6 +81,8 @@ def generate_script(video_subject: str, paragraph_number: int, ai_model: str, vo
 
             Here is an example of a string:
             "This is an example string."
+            
+            The Script should be engaging and informative, and should be suitable for youtube shorts and have an interisting hook to keep the viewer engaged.
 
             Do not under any circumstance reference this prompt in your response.
 
