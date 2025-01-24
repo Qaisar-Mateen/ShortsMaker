@@ -28,8 +28,7 @@ def search_for_stock_videos(query: str, api_key: str, it: int, min_dur: int) -> 
 
     # Parse the response
     response = r.json()
-
-    print(colored(f"Pixel Video Search Response: {response}\n", "cyan"))
+    # print(colored(f"Pixel Video Search Response: {response}\n", "cyan"))
 
     # Parse each video
     raw_urls = []
