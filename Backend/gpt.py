@@ -1,9 +1,15 @@
+# author: fuji codes
+# topic: MoneyPrinter
+# credits: https://github.com/FujiwaraChoki/MoneyPrinter
+
+# --- MODIFIED VERSION --- #
+
 import re
 import os
 import g4f
 import json
-import openai
-import google.generativeai as genai
+# import openai
+# import google.generativeai as genai
 
 from g4f.client import Client
 from termcolor import colored
@@ -14,10 +20,10 @@ from typing import Tuple, List
 load_dotenv("../.env")
 
 # Set environment variables
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai.api_key = OPENAI_API_KEY
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=GOOGLE_API_KEY)
+# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+# openai.api_key = OPENAI_API_KEY
+# GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+# genai.configure(api_key=GOOGLE_API_KEY)
 
 
 def generate_response(prompt: str, ai_model: str) -> str:
@@ -43,23 +49,6 @@ def generate_response(prompt: str, ai_model: str) -> str:
             provider=g4f.Provider.You, 
             messages=[{"role": "user", "content": prompt}],
         ).choices[0].message.content
-
-    elif ai_model in ["gpt3.5-turbo", "gpt4"]:
-
-        model_name = "gpt-3.5-turbo" if ai_model == "gpt3.5-turbo" else "gpt-4-1106-preview"
-
-        response = openai.chat.completions.create(
-
-            model=model_name,
-
-            messages=[{"role": "user", "content": prompt}],
-
-        ).choices[0].message.content
-    elif ai_model == 'gemmini':
-        model = genai.GenerativeModel('gemini-pro')
-        response_model = model.generate_content(prompt)
-        response = response_model.text
-
     else:
 
         raise ValueError("Invalid AI model selected.")
@@ -111,7 +100,6 @@ def generate_script(video_subject: str, paragraph_number: int, ai_model: str, vo
             YOU MUST NOT INCLUDE ANY TYPE OF MARKDOWN OR FORMATTING IN THE SCRIPT, NEVER USE A TITLE.
             YOU MUST WRITE THE SCRIPT IN THE LANGUAGE SPECIFIED IN [LANGUAGE].
             ONLY RETURN THE RAW CONTENT OF THE SCRIPT. DO NOT INCLUDE "VOICEOVER", "NARRATOR" OR SIMILAR INDICATORS OF WHAT SHOULD BE SPOKEN AT THE BEGINNING OF EACH PARAGRAPH OR LINE. YOU MUST NOT MENTION THE PROMPT, OR ANYTHING ABOUT THE SCRIPT ITSELF. ALSO, NEVER TALK ABOUT THE AMOUNT OF PARAGRAPHS OR LINES. JUST WRITE THE SCRIPT.
-
         """
 
     prompt += f"""
