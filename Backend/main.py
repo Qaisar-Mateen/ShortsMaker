@@ -1,3 +1,9 @@
+# author: fuji codes
+# topic: MoneyPrinter
+# credits: https://github.com/FujiwaraChoki/MoneyPrinter
+
+# --- MODIFIED VERSION --- #
+
 import os
 from utils import *
 from dotenv import load_dotenv
@@ -16,7 +22,7 @@ from tiktokvoice import *
 from flask_cors import CORS
 from termcolor import colored
 from youtube import upload_video
-from apiclient.errors import HttpError
+from googleapiclient.errors import HttpError
 from flask import Flask, request, jsonify
 from moviepy.config import change_settings
 
@@ -24,7 +30,7 @@ from moviepy.config import change_settings
 
 # Set environment variables
 SESSION_ID = os.getenv("TIKTOK_SESSION_ID")
-openai_api_key = os.getenv('OPENAI_API_KEY')
+# openai_api_key = os.getenv('OPENAI_API_KEY')
 change_settings({"IMAGEMAGICK_BINARY": os.getenv("IMAGEMAGICK_BINARY")})
 
 # Initialize Flask
@@ -105,7 +111,7 @@ def generate():
 
 
         # Generate a script
-        script = generate_script(data["videoSubject"], paragraph_number, ai_model, voice, data["customPrompt"])  # Pass the AI model to the script generation
+        script = generate_script(data["videoSubject"], paragraph_number, ai_model, voice, data["customPrompt"])
 
         # Generate search terms
         search_terms = get_search_terms(
