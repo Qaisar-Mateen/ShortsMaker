@@ -45,9 +45,10 @@ def generate_response(prompt: str, ai_model: str) -> str:
         # Newest G4F Architecture
         client = Client()
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            provider=g4f.Provider.You, 
+            model="gpt-4o-mini",
+            # provider=g4f.Provider.You, 
             messages=[{"role": "user", "content": prompt}],
+            web_search=False
         ).choices[0].message.content
     else:
 
