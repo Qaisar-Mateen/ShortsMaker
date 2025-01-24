@@ -247,4 +247,58 @@ def generate_metadata(video_subject: str, script: str, ai_model: str) -> Tuple[s
     # Generate keywords  
     keywords = get_search_terms(video_subject, 6, script, ai_model)  
 
-    return title, description, keywords  
+    return title, description, keywords
+
+
+def generate_image(self, prompt: str) -> str:
+    """
+    Generates an AI Image based on the given prompt.
+
+    Args:
+        prompt (str): Reference for image generation
+
+    Returns:
+        path (str): The path to the generated image.
+    """
+    ok = False
+    while ok == False:
+        client = Client()
+        response = client.images.generate(
+            model="flux",
+            prompt="a white siamese cat",
+            response_format="url"
+        )
+
+        print(f"Generated image URL: {response.data[0].url}")
+        
+        # url = f"https://hercai.onrender.com/prodia/text2image?prompt={prompt}"
+
+        # r = requests.get(url)
+        # parsed = r.json()
+
+        # if "url" not in parsed or not parsed.get("url"):
+        #     # Retry
+        #     if get_verbose():
+        #         info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
+        #     ok = False
+        # else:
+        #     ok = True
+        #     image_url = parsed["url"]
+
+        #     if get_verbose():
+        #         info(f" => Generated Image: {image_url}")
+
+        #     image_path = os.path.join(ROOT_DIR, ".mp", str(uuid4()) + ".png")
+                
+        #     with open(image_path, "wb") as image_file:
+        #         # Write bytes to file
+        #         image_r = requests.get(image_url)
+
+        #         image_file.write(image_r.content)
+
+        #     if get_verbose():
+        #         info(f" => Wrote Image to \"{image_path}\"\n")
+
+        #     self.images.append(image_path)
+                
+        #     return image_path
