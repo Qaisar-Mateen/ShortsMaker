@@ -169,6 +169,7 @@ def get_search_terms(video_subject: str, amount: int, script: str, ai_model: str
     YOU MUST NOT RETURN THE SCRIPT.
     
     The search terms must be related to the subject of the video.
+    The search terms shout not be too specific so that it became deficult to find clips.
     Here is an example of a JSON-Array of strings:
     ["search term 1", "search term 2", "search term 3"]
 
