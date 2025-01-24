@@ -27,7 +27,7 @@ cd Backend
 python main.py
 
 # Run the frontend server
-cd ../Frontend
+cd ../Frontendxs
 python -m http.server 3000
 ```
 
