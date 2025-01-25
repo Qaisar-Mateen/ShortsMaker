@@ -241,22 +241,60 @@
 </html>
 <style>
   .glowing-circle1 {
-    position: absolute;
+    position: fixed;
     width: 200px;
     height: 200px;
     background: radial-gradient(circle, rgba(0, 128, 255, 0.463), transparent);
     filter: blur(40px);
     border-radius: 50%;
     z-index: 0;
+    animation: floatAndResize1 5s infinite ease-in-out;
   }
 
+  @keyframes floatAndResize1 {
+  0% {
+    transform: translateX(0px) scale(1);
+  }
+  25% {
+    transform: translateX(-20px) scale(0.8);
+  }
+  50% {
+    transform: translateX(-50px) scale(1);
+  }
+  75% {
+    transform: translateX(-20px) scale(1.2);
+  }
+  100% {
+    transform: translateX(0px) scale(1);
+  }
+}
+
   .glowing-circle2 {
-    position: absolute;
+    position: fixed;
     width: 250px;
     height: 250px;
     background: radial-gradient(circle, rgba(170, 0, 255, 0.463), transparent);
     filter: blur(40px);
     border-radius: 50%;
     z-index: 0;
+    animation: floatAndResize2 5s infinite ease-in-out;
   }
+
+  @keyframes floatAndResize2 {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-20px) scale(0.8);
+  }
+  50% {
+    transform: translateY(-50px) scale(1);
+  }
+  75% {
+    transform: translateY(-20px) scale(1.2);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
 </style>
