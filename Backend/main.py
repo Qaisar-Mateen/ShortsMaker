@@ -23,7 +23,7 @@ from flask_cors import CORS
 from termcolor import colored
 from youtube import upload_video
 from googleapiclient.errors import HttpError
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response, stream_with_context
 from moviepy.config import change_settings
 
 
@@ -42,7 +42,7 @@ HOST = "0.0.0.0"
 PORT = 8080
 AMOUNT_OF_STOCK_VIDEOS = 6
 GENERATING = False
-
+progress_status = ""
 
 # Generation Endpoint
 @app.route("/api/generate", methods=["POST"])
@@ -51,6 +51,9 @@ def generate():
         # Set global variable
         global GENERATING
         GENERATING = True
+
+        global progress_status
+        progress_status = "Starting..."
 
         # Clean
         clean_dir("../temp/")
@@ -109,14 +112,18 @@ def generate():
             voice = "en_us_001"
             voice_prefix = voice[:2]
 
-
+        progress_status = "Generating Script..."
         # Generate a script
         script = generate_script(data["videoSubject"], paragraph_number, ai_model, voice, data["customPrompt"])
+        progress_status = "Script Generated!"
 
+        progress_status = "Generating Search Terms..."
         # Generate search terms
         search_terms = get_search_terms(
             data["videoSubject"], AMOUNT_OF_STOCK_VIDEOS, script, ai_model
         )
+
+        progress_status = "Searching for Stock Videos..."
 
         # Search for a video of the given search term
         video_urls = []
@@ -165,6 +172,7 @@ def generate():
 
         final_video_urls = video_urls[:AMOUNT_OF_STOCK_VIDEOS]
 
+        progress_status = "Downloading Stock Videos..."
         # Let user know
         print(colored(f"[+] Downloading {len(final_video_urls)} videos...", "blue"))
 
@@ -188,6 +196,8 @@ def generate():
 
         print(colored("[+] Script generated!\n", "green"))
 
+        progress_status = "Stock Videos Downloaded!"
+
         if not GENERATING:
             return jsonify(
                 {
@@ -203,6 +213,8 @@ def generate():
         # Remove empty strings
         sentences = list(filter(lambda x: x != "", sentences))
         paths = []
+
+        progress_status = "Generating Voice Over..."
 
         # Generate TTS for every sentence
         for sentence in sentences:
@@ -230,10 +242,12 @@ def generate():
             print(colored(f"[-] Error generating subtitles: {e}", "red"))
             subtitles_path = None
 
+        progress_status = "Stitching Stock Videos... (may take time)"
         # Concatenate videos
         temp_audio = AudioFileClip(tts_path)
         combined_video_path = combine_videos(video_paths, temp_audio.duration, 5, n_threads or 2)
 
+        progress_status = "Adding Voice and Subtitles... (may take time)"
         # Put everything together
         try:
             final_video_path = generate_video(combined_video_path, tts_path, subtitles_path, n_threads or 2, subtitles_position, text_color or "#FFFF00")
@@ -252,13 +266,39 @@ def generate():
         print(colored("   Keywords: ", "blue"))
         print(colored(f"  {', '.join(keywords)}", "blue"))
 
+        video_clip = VideoFileClip(f"../temp/{final_video_path}")
+        if use_music:
+
+            progress_status = "Adding Music..."
+            # Select a random song
+            song_path = choose_random_song()
+
+            original_duration = video_clip.duration
+            original_audio = video_clip.audio
+            song_clip = AudioFileClip(song_path).set_fps(44100)
+
+            # Set the volume of the song to 7% of the original volume
+            song_clip = song_clip.volumex(0.07).set_fps(44100)
+
+            # Add the song to the video
+            comp_audio = CompositeAudioClip([original_audio, song_clip])
+            video_clip = video_clip.set_audio(comp_audio)
+            video_clip = video_clip.set_fps(30)
+            video_clip = video_clip.set_duration(original_duration)
+            video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
+        else:
+            video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
+
         if automate_youtube_upload:
             # Start Youtube Uploader
             # Check if the CLIENT_SECRETS_FILE exists
+
+            progress_status = "Uploading to Youtube..."
             client_secrets_file = os.path.abspath("./client_secret.json")
             SKIP_YT_UPLOAD = False
             if not os.path.exists(client_secrets_file):
                 SKIP_YT_UPLOAD = True
+                progress_status = "Uploading Skipped! (no Secrets file)"
                 print(colored("[-] Client secrets file missing. YouTube upload will be skipped.", "yellow"))
                 print(colored("[-] Please download the client_secret.json from Google Cloud Platform and store this inside the /Backend directory.", "red"))
 
@@ -291,30 +331,10 @@ def generate():
                 except HttpError as e:
                     print(f"An HTTP error {e.resp.status} occurred:\n{e.content}")
 
-        video_clip = VideoFileClip(f"../temp/{final_video_path}")
-        if use_music:
-            # Select a random song
-            song_path = choose_random_song()
-
-            original_duration = video_clip.duration
-            original_audio = video_clip.audio
-            song_clip = AudioFileClip(song_path).set_fps(44100)
-
-            # Set the volume of the song to 7% of the original volume
-            song_clip = song_clip.volumex(0.07).set_fps(44100)
-
-            # Add the song to the video
-            comp_audio = CompositeAudioClip([original_audio, song_clip])
-            video_clip = video_clip.set_audio(comp_audio)
-            video_clip = video_clip.set_fps(30)
-            video_clip = video_clip.set_duration(original_duration)
-            video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
-        else:
-            video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
-
-
         # Let user know
         print(colored(f"[+] Video generated: {final_video_path}!", "green"))
+
+        progress_status = "Video Generated!"
 
         # Stop FFMPEG processes
         if os.name == "nt":
@@ -330,7 +350,7 @@ def generate():
         return jsonify(
             {
                 "status": "success",
-                "message": "Video generated! See MoneyPrinter/output.mp4 for result.",
+                "message": "Video generated! See ShortsMaker/output.mp4 for result.",
                 "data": final_video_path,
             }
         )
@@ -354,6 +374,13 @@ def cancel():
 
     return jsonify({"status": "success", "message": "Cancelled video generation."})
 
+
+@app.route("/api/progress")
+def progress():
+    def generate():
+        yield f"data: {progress_status}\n\n"
+
+    return Response(stream_with_context(generate()), mimetype="text/event-stream")
 
 if __name__ == "__main__":
 

@@ -50,8 +50,23 @@ const cancelGeneration = () => {
   generateButton.classList.remove("hidden");
 };
 
+function startProgressListener() {
+  // Close any existing connection
+  if (window.progressSource) {
+    window.progressSource.close();
+  }
+
+  window.progressSource = new EventSource("http://localhost:8080/api/progress");
+  window.progressSource.onmessage = (event) => {
+    console.log("Progress:", event.data);
+    cancelButton.textContent = `Cancel [${event.data}]`;
+  };
+}
+
 const generateVideo = () => {
   console.log("Generating video...");
+  
+
   // Disable button and change text
   generateButton.disabled = true;
   generateButton.classList.add("hidden");
@@ -89,7 +104,7 @@ const generateVideo = () => {
     customPrompt: customPromptValue,
     color: colorHexCode,
   };
-
+  startProgressListener();
   // Send the actual request to the server
   fetch(url, {
     method: "POST",
