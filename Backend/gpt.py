@@ -173,8 +173,9 @@ def get_search_terms(video_subject: str, amount: int, script: str, ai_model: str
     The search terms shout not be too specific so that it became deficult to find clips.
     Here is an example of a JSON-Array of strings:
     ['search term 1', 'search term 2', 'search term 3']
-
-    For context, here is the full text:
+    Do not write any thing else around it like \```json ['search term 1', 'search term 2', 'search term 3'] 
+    \```
+    For context, here is the full text: 
     {script}
     """
 
