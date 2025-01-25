@@ -40,7 +40,7 @@ CORS(app)
 # Constants
 HOST = "0.0.0.0"
 PORT = 8080
-AMOUNT_OF_STOCK_VIDEOS = 5
+AMOUNT_OF_STOCK_VIDEOS = 6
 GENERATING = False
 
 
@@ -125,7 +125,7 @@ def generate():
         it = 15
 
         # Defines the minimum duration of each clip
-        min_dur = 5
+        min_dur = 8
 
         # Loop through all search terms,
         # and search for a video of the given search term
@@ -145,7 +145,6 @@ def generate():
             for url in found_urls:
                 if url not in video_urls:
                     video_urls.append(url)
-                    break
 
         # Check if video_urls is empty
         if not video_urls:
@@ -161,11 +160,16 @@ def generate():
         # Define video_paths
         video_paths = []
 
+        # shuffle the video urls to avoid getting the same videos every time for same subject
+        random.shuffle(video_urls)
+
+        final_video_urls = video_urls[:AMOUNT_OF_STOCK_VIDEOS]
+
         # Let user know
-        print(colored(f"[+] Downloading {len(video_urls)} videos...", "blue"))
+        print(colored(f"[+] Downloading {len(final_video_urls)} videos...", "blue"))
 
         # Save the videos
-        for video_url in video_urls:
+        for video_url in final_video_urls:
             if not GENERATING:
                 return jsonify(
                     {
@@ -180,10 +184,8 @@ def generate():
             except Exception:
                 print(colored(f"[-] Could not download video: {video_url}", "red"))
 
-        # Let user know
         print(colored("[+] Videos downloaded!", "green"))
 
-        # Let user know
         print(colored("[+] Script generated!\n", "green"))
 
         if not GENERATING:
