@@ -122,6 +122,7 @@ def generate():
         search_terms = get_search_terms(
             data["videoSubject"], AMOUNT_OF_STOCK_VIDEOS, script, ai_model
         )
+        progress_status = "Search Terms Generated!"
 
         progress_status = "Searching for Stock Videos..."
 
@@ -163,7 +164,7 @@ def generate():
                     "data": [],
                 }
             )
-            
+        progress_status = f'Found {len(video_urls)} Videos!'   
         # Define video_paths
         video_paths = []
 
@@ -231,6 +232,8 @@ def generate():
             audio_clip = AudioFileClip(current_tts_path)
             paths.append(audio_clip)
 
+        progress_status = "Combining Voice Overs..."
+
         # Combine all TTS files using moviepy
         final_audio = concatenate_audioclips(paths)
         tts_path = f"../temp/{uuid4()}.mp3"
@@ -254,7 +257,8 @@ def generate():
         except Exception as e:
             print(colored(f"[-] Error generating final video: {e}", "red"))
             final_video_path = None
-
+        
+        progress_status = "Generating Metadata..."
         # Define metadata for the video, we will display this to the user, and use it for the YouTube upload
         title, description, keywords = generate_metadata(data["videoSubject"], script, ai_model)
 
