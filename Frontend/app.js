@@ -15,8 +15,8 @@ advancedOptionsToggle.addEventListener("click", () => {
   // Change Emoji, from ▼ to ▲ and vice versa
   const emoji = advancedOptionsToggle.textContent;
   advancedOptionsToggle.textContent = emoji.includes("▼")
-    ? "Show less Options ▲"
-    : "Show Advanced Options ▼";
+    ? "Hide Advance Options ▲"
+    : "Show Advance Options ▼";
   const advancedOptions = document.querySelector("#advancedOptions");
   advancedOptions.classList.toggle("hidden");
 });

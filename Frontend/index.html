@@ -6,7 +6,7 @@
     <title>ShortsMaker</title>
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💸</text></svg>"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🩳</text></svg>"
     />
 
     <link
@@ -16,10 +16,10 @@
   </head>
 
   <body class="bg-blue-100 min-h-screen justify-center p-40">
-    <h1 class="text-4xl text-center mb-4">ShortsMaker</h1>
+    <div class="glowing-circle1" style="top: 100px; left: 150px;"></div>
+    <h1 class="text-4xl text-center mb-4">ShortsMaker 🩳</h1>
     <p class="text-center text-gray-700">
-      This Application is intended to automate the creation and uploads of
-      YouTube Shorts.
+      Generate AI-generated shorts on any subject for your YouTube channel and Even Upload!
     </p>
 
     <div class="flex justify-center mt-8">
@@ -32,8 +32,9 @@
               id="videoSubject"
               class="border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
           ></textarea>
+          <div class="glowing-circle2" style="top: 320px; right: 150px;"></div>
         <button id="advancedOptionsToggle" class="text-blue-600">
-          Show Advanced Options ▼
+          Show Advance Options ▼
         </button>
         <div
           class="flex flex-col space-y-4 hidden transition-all duration-150 linear"
@@ -91,12 +92,12 @@
             <option value="kr_002">Korean - Male 1</option>
             <option value="kr_003">Korean - Female</option>
             <option value="kr_004">Korean - Male 2</option>
-            <option value="en_female_f08_salut_damour">Alto</option>
-            <option value="en_male_m03_lobby">Tenor</option>
-            <option value="en_female_f08_warmy_breeze">Warmy Breeze</option>
-            <option value="en_male_m03_sunshine_soon">Sunshine Soon</option>
+            <option value="en_female_f08_salut_damour">Alto (Singing)</option>
+            <option value="en_male_m03_lobby">Tenor (Singing)</option>
+            <option value="en_female_f08_warmy_breeze">Warmy Breeze (Singing)</option>
+            <option value="en_male_m03_sunshine_soon">Sunshine Soon (Singing)</option>
             <option value="en_male_narration">narrator</option>
-            <option value="en_male_funny">wacky</option>
+            <option value="en_male_funny">wacky (Funny)</option>
             <option value="en_female_emotional">peaceful</option>
           </select>
           <label for="subtitlesPosition" class="text-blue-600"
@@ -238,3 +239,24 @@
     <script src="app.js"></script>
   </body>
 </html>
+<style>
+  .glowing-circle1 {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 128, 255, 0.463), transparent);
+    filter: blur(40px);
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  .glowing-circle2 {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(170, 0, 255, 0.463), transparent);
+    filter: blur(40px);
+    border-radius: 50%;
+    z-index: 0;
+  }
+</style>
