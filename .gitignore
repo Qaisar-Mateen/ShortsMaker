@@ -7,7 +7,7 @@ images/*
 *.zip
 *.srt
 *.mp4
-*.mp3
+# *.mp3
 .history
 subtitles/*
 /venv
@@ -15,6 +15,6 @@ client_secret.json
 main.py-oauth2.json
 .DS_Store
 Backend/output*
-Songs/
+# Songs/
 .venv/
 ImageMagick
