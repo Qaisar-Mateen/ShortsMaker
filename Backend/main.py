@@ -42,7 +42,7 @@ HOST = "0.0.0.0"
 PORT = 8080
 AMOUNT_OF_STOCK_VIDEOS = 6
 GENERATING = False
-progress_status = ""
+progress_status = "Starting..."
 
 # Generation Endpoint
 @app.route("/api/generate", methods=["POST"])

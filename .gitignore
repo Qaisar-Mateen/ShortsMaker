@@ -18,3 +18,4 @@ Backend/output*
 # Songs/
 .venv/
 ImageMagick
+Local.md
