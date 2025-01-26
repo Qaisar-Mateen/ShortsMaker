@@ -154,9 +154,6 @@ const generateVideo = () => {
       alert("An error occurred. Please try again later.");
       console.log(error);
     });
-    // if (window.progressSource) {
-    //   window.progressSource.close();
-    // }
 };
 
 generateButton.addEventListener("click", generateVideo);

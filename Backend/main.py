@@ -291,8 +291,8 @@ def generate():
             original_audio = video_clip.audio
             song_clip = AudioFileClip(song_path).set_fps(44100)
 
-            # Set the volume of the song to 10% of the original volume
-            song_clip = song_clip.volumex(0.1).set_fps(44100)
+            # Set the volume of the song to 15% of the original volume
+            song_clip = song_clip.volumex(0.15).set_fps(44100)
 
             # Add the song to the video
             comp_audio = CompositeAudioClip([original_audio, song_clip])
@@ -351,12 +351,12 @@ def generate():
         progress_status = "Video Generated!"
 
         # Stop FFMPEG processes
-        if os.name == "nt":
-            # Windows
-            os.system("taskkill /f /im ffmpeg.exe")
-        else:
-            # Other OS
-            os.system("pkill -f ffmpeg")
+        # if os.name == "nt":
+        #     # Windows
+        #     os.system("taskkill /f /im ffmpeg.exe")
+        # else:
+        #     # Other OS
+        #     os.system("pkill -f ffmpeg")
 
         GENERATING = False
 
