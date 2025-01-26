@@ -291,8 +291,8 @@ def generate():
             original_audio = video_clip.audio
             song_clip = AudioFileClip(song_path).set_fps(44100)
 
-            # Set the volume of the song to 7% of the original volume
-            song_clip = song_clip.volumex(0.07).set_fps(44100)
+            # Set the volume of the song to 10% of the original volume
+            song_clip = song_clip.volumex(0.1).set_fps(44100)
 
             # Add the song to the video
             comp_audio = CompositeAudioClip([original_audio, song_clip])

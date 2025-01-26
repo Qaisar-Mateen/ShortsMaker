@@ -1,7 +1,0 @@
-1. improve search.
-
-2. add extra options for You Tube Upload.
-
-3. add background songs collection list directly on frontend.
-
-4. add some fonts (maybe).
