@@ -184,6 +184,7 @@
             />
             Upload to YouTube
           </label>
+          
           <label for="useMusicToggle" class="flex items-center text-blue-600">
             <input
               type="checkbox"
@@ -193,19 +194,14 @@
             />
             Use Music
           </label>
-
-          <div id="musicOptions" class="hidden">
+          
+          <div id="musicOptions" class="flex flex-col space-y-4 hidden transition-all duration-150 linear">
             <label for="musicType" class="text-blue-600">Music Type</label>
             <select
               name="musicType"
               id="musicType"
               class="w-min border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
             >
-              <option value="random">Random</option>
-              <option value="sad">Sad</option>
-              <option value="epic">Epic</option>
-              <option value="relaxing">Relaxing</option>
-              <option value="suspense">Suspense</option>
             </select>
           </div>
 
@@ -264,7 +260,7 @@
     background: radial-gradient(circle, rgba(0, 128, 255, 0.463), transparent);
     filter: blur(40px);
     border-radius: 50%;
-    z-index: 0;
+    z-index: -1;
     animation: floatAndResize1 5s infinite ease-in-out;
   }
 
@@ -293,7 +289,7 @@
     background: radial-gradient(circle, rgba(170, 0, 255, 0.463), transparent);
     filter: blur(40px);
     border-radius: 50%;
-    z-index: 0;
+    z-index: -1;
     animation: floatAndResize2 5s infinite ease-in-out;
   }
 

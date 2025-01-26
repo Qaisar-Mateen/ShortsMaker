@@ -8,8 +8,27 @@ const useMusicToggle = document.querySelector("#useMusicToggle");
 const customPrompt = document.querySelector("#customPrompt");
 const generateButton = document.querySelector("#generateButton");
 const cancelButton = document.querySelector("#cancelButton");
-// const musicOptions = document.querySelector("#musicOptions");
 const advancedOptionsToggle = document.querySelector("#advancedOptionsToggle");
+const musicType = document.querySelector("#musicType");
+
+function checkMusicToggle() {
+  const useMusicToggle = document.querySelector("#useMusicToggle");
+  const musicOptions = document.querySelector("#musicOptions");
+
+  if (useMusicToggle.checked) {
+    musicOptions.classList.remove("hidden");
+  } else {
+    musicOptions.classList.add("hidden");
+  }
+}
+setInterval(checkMusicToggle, 350);
+
+
+function checkTYToggle() {
+
+}
+
+
 
 advancedOptionsToggle.addEventListener("click", () => {
   // Change Emoji, from ▼ to ▲ and vice versa
@@ -20,6 +39,8 @@ advancedOptionsToggle.addEventListener("click", () => {
   const advancedOptions = document.querySelector("#advancedOptions");
   advancedOptions.classList.toggle("hidden");
 });
+
+
 
 
 const cancelGeneration = () => {
@@ -152,11 +173,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
   if (storedVoiceValue) {
     voiceSelect.value = storedVoiceValue;
   }
+
+  fetch("http://localhost:8080/api/songs").then(response => response.json())
+    .then(songs => {
+      // Clear existing options
+      musicType.innerHTML = '';
+
+      // Add a default option
+      const defaultOption = document.createElement('option');
+      defaultOption.value = 'random';
+      defaultOption.textContent = 'Random';
+      musicType.appendChild(defaultOption);
+
+      // Add options for each song
+      songs.forEach(song => {
+        const option = document.createElement('option');
+        option.value = song;
+        option.textContent = song.replace('.mp3', '');
+        musicType.appendChild(option);
+      });
+    })
+    .catch(error => console.error('Error fetching songs:', error));
+
 });
 
 // Save the data to localStorage when the user changes the value
 toggles = ["youtubeUploadToggle", "useMusicToggle", "reuseChoicesToggle"];
-fields = ["aiModel", "voice", "paragraphNumber", "videoSubject", "customPrompt", "threads", "subtitlesPosition", "subtitlesColor"];
+fields = ["aiModel", "voice", "musicType", "paragraphNumber", "videoSubject", "customPrompt", "threads", "subtitlesPosition", "subtitlesColor"];
 
 document.addEventListener("DOMContentLoaded", () => {
   toggles.forEach((id) => {

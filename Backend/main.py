@@ -386,6 +386,12 @@ def progress():
 
     return Response(stream_with_context(generate()), mimetype="text/event-stream")
 
+@app.route('/api/songs', methods=['GET'])
+def list_songs():
+    songs_dir = os.path.join(os.path.dirname(__file__), '..', 'Songs')
+    songs = [f for f in os.listdir(songs_dir) if os.path.isfile(os.path.join(songs_dir, f))]
+    return jsonify(songs)
+
 if __name__ == "__main__":
 
     # Run Flask App
