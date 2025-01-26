@@ -8,7 +8,7 @@ const useMusicToggle = document.querySelector("#useMusicToggle");
 const customPrompt = document.querySelector("#customPrompt");
 const generateButton = document.querySelector("#generateButton");
 const cancelButton = document.querySelector("#cancelButton");
-
+// const musicOptions = document.querySelector("#musicOptions");
 const advancedOptionsToggle = document.querySelector("#advancedOptionsToggle");
 
 advancedOptionsToggle.addEventListener("click", () => {
@@ -24,6 +24,9 @@ advancedOptionsToggle.addEventListener("click", () => {
 
 const cancelGeneration = () => {
   console.log("Canceling generation...");
+  if (window.progressSource) {
+    window.progressSource.close();
+  }
   // Send request to /cancel
   fetch("http://localhost:8080/api/cancel", {
     method: "POST",
@@ -127,6 +130,9 @@ const generateVideo = () => {
       alert("An error occurred. Please try again later.");
       console.log(error);
     });
+    if (window.progressSource) {
+      window.progressSource.close();
+    }
 };
 
 generateButton.addEventListener("click", generateVideo);
@@ -150,7 +156,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 // Save the data to localStorage when the user changes the value
 toggles = ["youtubeUploadToggle", "useMusicToggle", "reuseChoicesToggle"];
-fields = ["aiModel", "voice", "paragraphNumber", "videoSubject", "zipUrl", "customPrompt", "threads", "subtitlesPosition", "subtitlesColor"];
+fields = ["aiModel", "voice", "paragraphNumber", "videoSubject", "customPrompt", "threads", "subtitlesPosition", "subtitlesColor"];
 
 document.addEventListener("DOMContentLoaded", () => {
   toggles.forEach((id) => {

@@ -130,15 +130,16 @@
             <option value="#fff">White</option>
             <option value="#03071e">Black</option>
           </select>
-          <label for="zipUrl" class="text-blue-600"
+          
+            <label for="zipUrl" class="text-blue-600 hidden"
             >Zip URL (Leave empty for default)</label
           >
-          <!-- <input
+           <input
             type="text"
             name="zipUrl"
             id="zipUrl"
-            class="border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-          /> -->
+            class="hidden border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+          />
           <label for="threads" class="text-blue-600">Threads</label>
           <input
             type="number"
@@ -192,6 +193,22 @@
             />
             Use Music
           </label>
+
+          <div id="musicOptions" class="hidden">
+            <label for="musicType" class="text-blue-600">Music Type</label>
+            <select
+              name="musicType"
+              id="musicType"
+              class="w-min border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="random">Random</option>
+              <option value="sad">Sad</option>
+              <option value="epic">Epic</option>
+              <option value="relaxing">Relaxing</option>
+              <option value="suspense">Suspense</option>
+            </select>
+          </div>
+
           <label
             for="reuseChoicesToggle"
             class="flex items-center text-blue-600"
