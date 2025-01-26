@@ -89,8 +89,8 @@ def choose_random_song() -> str:
         print(f'Songs Found: {songs}')
         song = random.choice(songs)
         logger.info(colored(f"Chose song: {song}", "green"))
-        # return f"../Songs/{song}"
-        return "../Songs/ჩუბინა.mp3"
+        return f"../Songs/{song}"
+    
     except Exception as e:
         logger.error(colored(f"Error occurred while choosing random song: {str(e)}", "red"))
 

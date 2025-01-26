@@ -102,6 +102,7 @@ const generateVideo = () => {
   const videoSubjectValue = videoSubject.value;
   const aiModelValue = aiModel.value;
   const voiceValue = voice.value;
+  const musicTypeValue = musicType.value;
   const paragraphNumberValue = paragraphNumber.value;
   const youtubeUpload = youtubeToggle.checked;
   const useMusicToggleState = useMusicToggle.checked;
@@ -112,6 +113,7 @@ const generateVideo = () => {
   const colorHexCode = document.querySelector("#subtitlesColor").value;
 
 
+
   const url = "http://localhost:8080/api/generate";
 
   // Construct data to be sent to the server
@@ -119,6 +121,7 @@ const generateVideo = () => {
     videoSubject: videoSubjectValue,
     aiModel: aiModelValue,
     voice: voiceValue,
+    musicType: musicTypeValue,
     paragraphNumber: paragraphNumberValue,
     automateYoutubeUpload: youtubeUpload,
     useMusic: useMusicToggleState,

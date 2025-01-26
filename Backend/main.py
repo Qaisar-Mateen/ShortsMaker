@@ -71,6 +71,8 @@ def generate():
         # Get 'useMusic' from the request data and default to False if not provided
         use_music = data.get('useMusic', False)
 
+        musicType = data.get('musicType', 'random')
+
         # Get 'automateYoutubeUpload' from the request data and default to False if not provided
         automate_youtube_upload = data.get('automateYoutubeUpload', False)
 
@@ -274,8 +276,16 @@ def generate():
         if use_music:
 
             progress_status = "Adding Music..."
-            # Select a random song
-            song_path = choose_random_song()
+
+            if musicType == 'random':
+                # Select a random song
+                song_path = choose_random_song()
+                print(colored(f"[*] Selected random song: {song_path}", "green"))
+
+            else:
+                # Select a specific song
+                song_path = f"../Songs/{musicType}"
+                print(colored(f"[*] Selected specific song: {song_path}", "green"))
 
             original_duration = video_clip.duration
             original_audio = video_clip.audio
