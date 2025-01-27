@@ -85,6 +85,8 @@ def generate():
 
         visibility = data.get('visibility', 'private')
 
+        catID = data.get('vidCategory', '24')
+
         # Get the ZIP Url of the songs
         # songs_zip_url = data.get('zipUrl')
 
@@ -328,7 +330,7 @@ def generate():
             # Only proceed with YouTube upload if the toggle is True  and client_secret.json exists.
             if not SKIP_YT_UPLOAD:
                 # Choose the appropriate category ID for your videos
-                video_category_id = "28"  # Science & Technology
+                video_category_id = catID  # Science & Technology
                 privacyStatus = visibility  # "public", "private", "unlisted"
                 video_metadata = {
                     'video_path': os.path.abspath(f"../temp/{final_video_path}"),
@@ -355,8 +357,8 @@ def generate():
                     print(f"An HTTP error {e.resp.status} occurred:\n{e.content}")
 
         # Let user know
-        print(colored(f"[+] Video generated: !", "green"))
-        # print(colored(f"[+] Video generated: {final_video_path}!", "green"))
+
+        print(colored(f"[+] Video generated: {final_video_path}!", "green"))
 
         progress_status = "Video Generated!"
 
@@ -378,8 +380,7 @@ def generate():
             {
                 "status": "success",
                 "message": "Video generated! See ShortsMaker/output.mp4 for result.",
-                # "data": final_video_path,
-                "data": "output.mp4",
+                "data": final_video_path,
             }
         )
     except Exception as err:

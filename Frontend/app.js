@@ -119,6 +119,7 @@ const generateVideo = () => {
   const subtitlesPosition = document.querySelector("#subtitlesPosition").value;
   const colorHexCode = document.querySelector("#subtitlesColor").value;
   const visibility = document.querySelector("#videoStatus").value;
+  const category = document.querySelector("#videoCategory").value;
 
 
   const url = "http://localhost:8080/api/generate";
@@ -138,6 +139,7 @@ const generateVideo = () => {
     customPrompt: customPromptValue,
     color: colorHexCode,
     visibility: visibility,
+    vidCategory: category
   };
   startProgressListener();
   // Send the actual request to the server
