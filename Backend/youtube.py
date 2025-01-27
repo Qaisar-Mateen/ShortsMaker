@@ -71,21 +71,36 @@ def get_authenticated_service():
     print('[*] authenticate...')
     flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
                                    scope=SCOPES,
-                                   message=MISSING_CLIENT_SECRETS_MESSAGE,
-                                   redirect_uri='http://localhost:8080')
+                                   message=MISSING_CLIENT_SECRETS_MESSAGE)
+    
+
+    flow.redirect_uri = 'http://localhost:8080/'
 
     storage = Storage(f"{sys.argv[0]}-oauth2.json")
     credentials = storage.get()
     
-    if credentials is None or credentials.invalid:
-        flags = argparser.parse_args(args=["--noauth_local_webserver"])
-        try:
-            # Run the OAuth flow to get credentials
-            credentials = run_flow(flow, storage, flags)
-        except Exception as e:
-            print("[!] Error during OAuth flow:", e)
-            return None
+    # if credentials is None or credentials.invalid:
+    #     flags = argparser.parse_args(args=[])#"--noauth_local_webserver"
+    #     try:
+    #         # Run the OAuth flow to get credentials
+    #         credentials = run_flow(flow, storage, flags)
+    #     except Exception as e:
+    #         print("[!] Error during OAuth flow:", e)
+    #         return None
+
+    if not credentials or credentials.invalid:
+        auth_uri = flow.step1_get_authorize_url()
+        print(f"[*] Please open the following URL in your browser to authenticate:\n\n{auth_uri}\n")
         
+        # Wait for the user to enter the authorization code
+        auth_code = input("[*] Enter the authorization code: ").strip()
+        
+        # Exchange the authorization code for credentials
+        credentials = flow.step2_exchange(auth_code)
+        storage.put(credentials)
+
+    print("[*] Credentials retrieved successfully!")
+
     print('Credentials:')
     print(credentials.to_json())
     
