@@ -7,6 +7,7 @@
 import os
 from utils import *
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables
 load_dotenv("../.env")
@@ -27,6 +28,12 @@ from flask import Flask, request, jsonify, Response, stream_with_context
 from moviepy.config import change_settings
 
 
+class NoProgressFilter(logging.Filter):
+    def filter(self, record):
+        return "/api/progress" not in record.getMessage()
+    
+# Apply the filter to the werkzeug logger
+logging.getLogger('werkzeug').addFilter(NoProgressFilter())
 
 # Set environment variables
 SESSION_ID = os.getenv("TIKTOK_SESSION_ID")
@@ -56,8 +63,8 @@ def generate():
         progress_status = "Starting..."
 
         # Clean
-        clean_dir("../temp/")
-        clean_dir("../subtitles/")
+        # clean_dir("../temp/")
+        # clean_dir("../subtitles/")
 
 
         # Parse JSON
@@ -96,212 +103,212 @@ def generate():
 
 
 
-        if not GENERATING:
-            return jsonify(
-                {
-                    "status": "error",
-                    "message": "Video generation was cancelled.",
-                    "data": [],
-                }
-            )
+        # if not GENERATING:
+        #     return jsonify(
+        #         {
+        #             "status": "error",
+        #             "message": "Video generation was cancelled.",
+        #             "data": [],
+        #         }
+        #     )
         
-        voice = data["voice"]
-        voice_prefix = voice[:2]
+        # voice = data["voice"]
+        # voice_prefix = voice[:2]
 
 
-        if not voice:
-            print(colored("[!] No voice was selected. Defaulting to \"en_us_001\"", "yellow"))
-            voice = "en_us_001"
-            voice_prefix = voice[:2]
+        # if not voice:
+        #     print(colored("[!] No voice was selected. Defaulting to \"en_us_001\"", "yellow"))
+        #     voice = "en_us_001"
+        #     voice_prefix = voice[:2]
 
-        progress_status = "Generating Script..."
-        # Generate a script
-        script = generate_script(data["videoSubject"], paragraph_number, ai_model, voice, data["customPrompt"])
-        progress_status = "Script Generated!"
+        # progress_status = "Generating Script..."
+        # # Generate a script
+        # script = generate_script(data["videoSubject"], paragraph_number, ai_model, voice, data["customPrompt"])
+        # progress_status = "Script Generated!"
 
-        progress_status = "Generating Search Terms..."
-        # Generate search terms
-        search_terms = get_search_terms(
-            data["videoSubject"], AMOUNT_OF_STOCK_VIDEOS, script, ai_model
-        )
-        progress_status = "Search Terms Generated!"
+        # progress_status = "Generating Search Terms..."
+        # # Generate search terms
+        # search_terms = get_search_terms(
+        #     data["videoSubject"], AMOUNT_OF_STOCK_VIDEOS, script, ai_model
+        # )
+        # progress_status = "Search Terms Generated!"
 
-        progress_status = "Searching for Stock Videos..."
+        # progress_status = "Searching for Stock Videos..."
 
-        # Search for a video of the given search term
-        video_urls = []
+        # # Search for a video of the given search term
+        # video_urls = []
 
-        # Defines how many results it should query and search through
-        it = 15
+        # # Defines how many results it should query and search through
+        # it = 15
 
-        # Defines the minimum duration of each clip
-        min_dur = 8
+        # # Defines the minimum duration of each clip
+        # min_dur = 8
 
-        # Loop through all search terms,
-        # and search for a video of the given search term
-        for search_term in search_terms:
-            if not GENERATING:
-                return jsonify(
-                    {
-                        "status": "error",
-                        "message": "Video generation was cancelled.",
-                        "data": [],
-                    }
-                )
-            found_urls = search_for_stock_videos(
-                search_term, os.getenv("PEXELS_API_KEY"), it, min_dur
-            )
-            # Check for duplicates
-            for url in found_urls:
-                if url not in video_urls:
-                    video_urls.append(url)
+        # # Loop through all search terms,
+        # # and search for a video of the given search term
+        # for search_term in search_terms:
+        #     if not GENERATING:
+        #         return jsonify(
+        #             {
+        #                 "status": "error",
+        #                 "message": "Video generation was cancelled.",
+        #                 "data": [],
+        #             }
+        #         )
+        #     found_urls = search_for_stock_videos(
+        #         search_term, os.getenv("PEXELS_API_KEY"), it, min_dur
+        #     )
+        #     # Check for duplicates
+        #     for url in found_urls:
+        #         if url not in video_urls:
+        #             video_urls.append(url)
 
-        # Check if video_urls is empty
-        if not video_urls:
-            print(colored("[-] No videos found to download.", "red"))
-            return jsonify(
-                {
-                    "status": "error",
-                    "message": "No videos found to download.",
-                    "data": [],
-                }
-            )
-        progress_status = f'Found {len(video_urls)} Videos!'   
-        # Define video_paths
-        video_paths = []
+        # # Check if video_urls is empty
+        # if not video_urls:
+        #     print(colored("[-] No videos found to download.", "red"))
+        #     return jsonify(
+        #         {
+        #             "status": "error",
+        #             "message": "No videos found to download.",
+        #             "data": [],
+        #         }
+        #     )
+        # progress_status = f'Found {len(video_urls)} Videos!'   
+        # # Define video_paths
+        # video_paths = []
 
-        # shuffle the video urls to avoid getting the same videos every time for same subject
-        random.shuffle(video_urls)
+        # # shuffle the video urls to avoid getting the same videos every time for same subject
+        # random.shuffle(video_urls)
 
-        final_video_urls = video_urls[:AMOUNT_OF_STOCK_VIDEOS]
+        # final_video_urls = video_urls[:AMOUNT_OF_STOCK_VIDEOS]
 
-        progress_status = "Downloading Stock Videos..."
-        # Let user know
-        print(colored(f"[+] Downloading {len(final_video_urls)} videos...", "blue"))
+        # progress_status = "Downloading Stock Videos..."
+        # # Let user know
+        # print(colored(f"[+] Downloading {len(final_video_urls)} videos...", "blue"))
 
-        # Save the videos
-        for video_url in final_video_urls:
-            if not GENERATING:
-                return jsonify(
-                    {
-                        "status": "error",
-                        "message": "Video generation was cancelled.",
-                        "data": [],
-                    }
-                )
-            try:
-                saved_video_path = save_video(video_url)
-                video_paths.append(saved_video_path)
-            except Exception:
-                print(colored(f"[-] Could not download video: {video_url}", "red"))
+        # # Save the videos
+        # for video_url in final_video_urls:
+        #     if not GENERATING:
+        #         return jsonify(
+        #             {
+        #                 "status": "error",
+        #                 "message": "Video generation was cancelled.",
+        #                 "data": [],
+        #             }
+        #         )
+        #     try:
+        #         saved_video_path = save_video(video_url)
+        #         video_paths.append(saved_video_path)
+        #     except Exception:
+        #         print(colored(f"[-] Could not download video: {video_url}", "red"))
 
-        print(colored("[+] Videos downloaded!", "green"))
+        # print(colored("[+] Videos downloaded!", "green"))
 
-        print(colored("[+] Script generated!\n", "green"))
+        # print(colored("[+] Script generated!\n", "green"))
 
-        progress_status = "Stock Videos Downloaded!"
+        # progress_status = "Stock Videos Downloaded!"
 
-        if not GENERATING:
-            return jsonify(
-                {
-                    "status": "error",
-                    "message": "Video generation was cancelled.",
-                    "data": [],
-                }
-            )
+        # if not GENERATING:
+        #     return jsonify(
+        #         {
+        #             "status": "error",
+        #             "message": "Video generation was cancelled.",
+        #             "data": [],
+        #         }
+        #     )
 
-        # Split script into sentences
-        sentences = script.split(". ")
+        # # Split script into sentences
+        # sentences = script.split(". ")
 
-        # Remove empty strings
-        sentences = list(filter(lambda x: x != "", sentences))
-        paths = []
+        # # Remove empty strings
+        # sentences = list(filter(lambda x: x != "", sentences))
+        # paths = []
 
-        progress_status = "Generating Voice Over..."
+        # progress_status = "Generating Voice Over..."
 
-        # Generate TTS for every sentence
-        for sentence in sentences:
-            if not GENERATING:
-                return jsonify(
-                    {
-                        "status": "error",
-                        "message": "Video generation was cancelled.",
-                        "data": [],
-                    }
-                )
-            current_tts_path = f"../temp/{uuid4()}.mp3"
-            tts(sentence, voice, filename=current_tts_path)
-            audio_clip = AudioFileClip(current_tts_path)
-            paths.append(audio_clip)
+        # # Generate TTS for every sentence
+        # for sentence in sentences:
+        #     if not GENERATING:
+        #         return jsonify(
+        #             {
+        #                 "status": "error",
+        #                 "message": "Video generation was cancelled.",
+        #                 "data": [],
+        #             }
+        #         )
+        #     current_tts_path = f"../temp/{uuid4()}.mp3"
+        #     tts(sentence, voice, filename=current_tts_path)
+        #     audio_clip = AudioFileClip(current_tts_path)
+        #     paths.append(audio_clip)
 
-        progress_status = "Combining Voice Overs..."
+        # progress_status = "Combining Voice Overs..."
 
-        # Combine all TTS files using moviepy
-        final_audio = concatenate_audioclips(paths)
-        tts_path = f"../temp/{uuid4()}.mp3"
-        final_audio.write_audiofile(tts_path)
+        # # Combine all TTS files using moviepy
+        # final_audio = concatenate_audioclips(paths)
+        # tts_path = f"../temp/{uuid4()}.mp3"
+        # final_audio.write_audiofile(tts_path)
 
-        try:
-            subtitles_path = generate_subtitles(audio_path=tts_path, sentences=sentences, audio_clips=paths, voice=voice_prefix)
-        except Exception as e:
-            print(colored(f"[-] Error generating subtitles: {e}", "red"))
-            subtitles_path = None
+        # try:
+        #     subtitles_path = generate_subtitles(audio_path=tts_path, sentences=sentences, audio_clips=paths, voice=voice_prefix)
+        # except Exception as e:
+        #     print(colored(f"[-] Error generating subtitles: {e}", "red"))
+        #     subtitles_path = None
 
-        progress_status = "Stitching Stock Videos... (may take time)"
-        # Concatenate videos
-        temp_audio = AudioFileClip(tts_path)
-        combined_video_path = combine_videos(video_paths, temp_audio.duration, 5, n_threads or 2)
+        # progress_status = "Stitching Stock Videos... (may take time)"
+        # # Concatenate videos
+        # temp_audio = AudioFileClip(tts_path)
+        # combined_video_path = combine_videos(video_paths, temp_audio.duration, 5, n_threads or 2)
 
-        progress_status = "Adding Voice and Subtitles... (may take time)"
-        # Put everything together
-        try:
-            final_video_path = generate_video(combined_video_path, tts_path, subtitles_path, n_threads or 2, subtitles_position, text_color or "#FFFF00")
-        except Exception as e:
-            print(colored(f"[-] Error generating final video: {e}", "red"))
-            final_video_path = None
+        # progress_status = "Adding Voice and Subtitles... (may take time)"
+        # # Put everything together
+        # try:
+        #     final_video_path = generate_video(combined_video_path, tts_path, subtitles_path, n_threads or 2, subtitles_position, text_color or "#FFFF00")
+        # except Exception as e:
+        #     print(colored(f"[-] Error generating final video: {e}", "red"))
+        #     final_video_path = None
         
-        progress_status = "Generating Metadata..."
-        # Define metadata for the video, we will display this to the user, and use it for the YouTube upload
-        title, description, keywords = generate_metadata(data["videoSubject"], script, ai_model)
+        # progress_status = "Generating Metadata..."
+        # # Define metadata for the video, we will display this to the user, and use it for the YouTube upload
+        # title, description, keywords = generate_metadata(data["videoSubject"], script, ai_model)
 
-        print(colored("[-] Metadata for YouTube upload:", "blue"))
-        print(colored("   Title: ", "blue"))
-        print(colored(f"   {title}", "blue"))
-        print(colored("   Description: ", "blue"))
-        print(colored(f"   {description}", "blue"))
-        print(colored("   Keywords: ", "blue"))
-        print(colored(f"  {', '.join(keywords)}", "blue"))
+        # print(colored("[-] Metadata for YouTube upload:", "blue"))
+        # print(colored("   Title: ", "blue"))
+        # print(colored(f"   {title}", "blue"))
+        # print(colored("   Description: ", "blue"))
+        # print(colored(f"   {description}", "blue"))
+        # print(colored("   Keywords: ", "blue"))
+        # print(colored(f"  {', '.join(keywords)}", "blue"))
 
-        video_clip = VideoFileClip(f"../temp/{final_video_path}")
-        if use_music:
+        # video_clip = VideoFileClip(f"../temp/{final_video_path}")
+        # if use_music:
 
-            progress_status = "Adding Music..."
+        #     progress_status = "Adding Music..."
 
-            if musicType == 'random':
-                # Select a random song
-                song_path = choose_random_song()
-                print(colored(f"[*] Selected random song: {song_path}", "green"))
+        #     if musicType == 'random':
+        #         # Select a random song
+        #         song_path = choose_random_song()
+        #         print(colored(f"[*] Selected random song: {song_path}", "green"))
 
-            else:
-                # Select a specific song
-                song_path = f"../Songs/{musicType}"
-                print(colored(f"[*] Selected specific song: {song_path}", "green"))
+        #     else:
+        #         # Select a specific song
+        #         song_path = f"../Songs/{musicType}"
+        #         print(colored(f"[*] Selected specific song: {song_path}", "green"))
 
-            original_duration = video_clip.duration
-            original_audio = video_clip.audio
-            song_clip = AudioFileClip(song_path).set_fps(44100)
+        #     original_duration = video_clip.duration
+        #     original_audio = video_clip.audio
+        #     song_clip = AudioFileClip(song_path).set_fps(44100)
 
-            # Set the volume of the song to 15% of the original volume
-            song_clip = song_clip.volumex(0.15).set_fps(44100)
+        #     # Set the volume of the song to 15% of the original volume
+        #     song_clip = song_clip.volumex(0.15).set_fps(44100)
 
-            # Add the song to the video
-            comp_audio = CompositeAudioClip([original_audio, song_clip])
-            video_clip = video_clip.set_audio(comp_audio)
-            video_clip = video_clip.set_fps(30)
-            video_clip = video_clip.set_duration(original_duration)
-            video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
-        else:
-            video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
+        #     # Add the song to the video
+        #     comp_audio = CompositeAudioClip([original_audio, song_clip])
+        #     video_clip = video_clip.set_audio(comp_audio)
+        #     video_clip = video_clip.set_fps(30)
+        #     video_clip = video_clip.set_duration(original_duration)
+        #     video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
+        # else:
+        #     video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
 
         if automate_youtube_upload:
             # Start Youtube Uploader
@@ -321,12 +328,21 @@ def generate():
                 # Choose the appropriate category ID for your videos
                 video_category_id = "28"  # Science & Technology
                 privacyStatus = "private"  # "public", "private", "unlisted"
+                # video_metadata = {
+                #     'video_path': os.path.abspath(f"../temp/{final_video_path}"),
+                #     'title': title,
+                #     'description': description,
+                #     'category': video_category_id,
+                #     'keywords': ",".join(keywords),
+                #     'privacyStatus': privacyStatus,
+                # }
+
                 video_metadata = {
-                    'video_path': os.path.abspath(f"../temp/{final_video_path}"),
-                    'title': title,
-                    'description': description,
+                    'video_path': os.path.abspath(f"../temp/output.mp4"),
+                    'title': "test",
+                    'description': "description",
                     'category': video_category_id,
-                    'keywords': ",".join(keywords),
+                    'keywords': ",".join(['test', 'test2']),
                     'privacyStatus': privacyStatus,
                 }
 
@@ -346,17 +362,21 @@ def generate():
                     print(f"An HTTP error {e.resp.status} occurred:\n{e.content}")
 
         # Let user know
-        print(colored(f"[+] Video generated: {final_video_path}!", "green"))
+        print(colored(f"[+] Video generated: !", "green"))
+        # print(colored(f"[+] Video generated: {final_video_path}!", "green"))
 
         progress_status = "Video Generated!"
 
         # Stop FFMPEG processes
-        # if os.name == "nt":
-        #     # Windows
-        #     os.system("taskkill /f /im ffmpeg.exe")
-        # else:
-        #     # Other OS
-        #     os.system("pkill -f ffmpeg")
+        try:
+            if os.name == "nt":
+                # Windows
+                os.system("taskkill /f /im ffmpeg.exe")
+            else:
+                # Other OS
+                os.system("pkill -f ffmpeg")
+        except Exception as e:
+            print(colored(f"[-] Error stopping FFMPEG processes: {e}", "red"))
 
         GENERATING = False
 
@@ -365,7 +385,8 @@ def generate():
             {
                 "status": "success",
                 "message": "Video generated! See ShortsMaker/output.mp4 for result.",
-                "data": final_video_path,
+                # "data": final_video_path,
+                "data": "output.mp4",
             }
         )
     except Exception as err:

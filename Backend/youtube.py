@@ -67,17 +67,28 @@ def get_authenticated_service():
     Returns:
         any: The authenticated YouTube service.
     """
+
+    print('[*] authenticate...')
     flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
                                    scope=SCOPES,
-                                   message=MISSING_CLIENT_SECRETS_MESSAGE)
+                                   message=MISSING_CLIENT_SECRETS_MESSAGE,
+                                   redirect_uri='http://localhost:8080')
 
     storage = Storage(f"{sys.argv[0]}-oauth2.json")
     credentials = storage.get()
-
+    
     if credentials is None or credentials.invalid:
-        flags = argparser.parse_args()
-        credentials = run_flow(flow, storage, flags)
-
+        flags = argparser.parse_args(args=["--noauth_local_webserver"])
+        try:
+            # Run the OAuth flow to get credentials
+            credentials = run_flow(flow, storage, flags)
+        except Exception as e:
+            print("[!] Error during OAuth flow:", e)
+            return None
+        
+    print('Credentials:')
+    print(credentials.to_json())
+    
     return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
                  http=credentials.authorize(httplib2.Http()))
 
@@ -92,7 +103,7 @@ def initialize_upload(youtube: any, options: dict):
     Returns:
         response: The response from the upload process.
     """
-
+    print('[*] Init Upload...')
     tags = None
     if options['keywords']:
         tags = options['keywords'].split(",")
