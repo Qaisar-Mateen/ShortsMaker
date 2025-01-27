@@ -101,7 +101,6 @@ def get_authenticated_service():
 
     print("[*] Credentials retrieved successfully!")
 
-    print('Credentials:')
     print(credentials.to_json())
     
     return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
