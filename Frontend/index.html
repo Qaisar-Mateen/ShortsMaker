@@ -184,6 +184,33 @@
             />
             Upload to YouTube
           </label>
+
+          <div id="youtubeOptions" class="flex flex-col space-y-4 hidden transition-all duration-150 linear">
+            <label for="videoStatus" class="text-blue-600">Video Status</label>
+            <select
+              name="videoStatus"
+              id="videoStatus"
+              class="w-min border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="private">Private</option>
+              <option value="public">Public</option>
+              <option value="unlisted">Unlisted</option>
+            </select>
+
+            <!-- <label for="videoCategory" class="text-blue-600">Video Category</label>
+            <select
+              name="videoCategory"
+              id="videoCategory"
+              class="w-min border-2 border-blue-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="education">Education</option>
+              <option value="entertainment">Entertainment</option>
+              <option value="music">Music</option>
+              <option value="sports">Sports</option>
+              <option value="technology">Technology</option>
+              <!-- Add more categories as needed -->
+            </select> -->
+          </div>
           
           <label for="useMusicToggle" class="flex items-center text-blue-600">
             <input

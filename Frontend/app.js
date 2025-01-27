@@ -11,6 +11,7 @@ const cancelButton = document.querySelector("#cancelButton");
 const advancedOptionsToggle = document.querySelector("#advancedOptionsToggle");
 const musicType = document.querySelector("#musicType");
 
+
 function checkMusicToggle() {
   const useMusicToggle = document.querySelector("#useMusicToggle");
   const musicOptions = document.querySelector("#musicOptions");
@@ -25,9 +26,15 @@ setInterval(checkMusicToggle, 350);
 
 
 function checkTYToggle() {
-
+  const youtubeOptions = document.querySelector("#youtubeOptions");
+  
+  if (youtubeToggle.checked) {
+    youtubeOptions.classList.remove("hidden");
+  } else {
+    youtubeOptions.classList.add("hidden");
+  }
 }
-
+setInterval(checkTYToggle, 350);
 
 
 advancedOptionsToggle.addEventListener("click", () => {
@@ -111,7 +118,7 @@ const generateVideo = () => {
   const customPromptValue = customPrompt.value;
   const subtitlesPosition = document.querySelector("#subtitlesPosition").value;
   const colorHexCode = document.querySelector("#subtitlesColor").value;
-
+  const visibility = document.querySelector("#videoStatus").value;
 
 
   const url = "http://localhost:8080/api/generate";
@@ -130,6 +137,7 @@ const generateVideo = () => {
     subtitlesPosition: subtitlesPosition,
     customPrompt: customPromptValue,
     color: colorHexCode,
+    visibility: visibility,
   };
   startProgressListener();
   // Send the actual request to the server
@@ -199,7 +207,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 // Save the data to localStorage when the user changes the value
 toggles = ["youtubeUploadToggle", "useMusicToggle", "reuseChoicesToggle"];
-fields = ["aiModel", "voice", "musicType", "paragraphNumber", "videoSubject", "customPrompt", "threads", "subtitlesPosition", "subtitlesColor"];
+fields = ["aiModel", "voice", "musicType", "videoStatus", "paragraphNumber", "videoSubject", "customPrompt", "threads", "subtitlesPosition", "subtitlesColor"];
 
 document.addEventListener("DOMContentLoaded", () => {
   toggles.forEach((id) => {

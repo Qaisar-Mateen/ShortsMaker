@@ -83,6 +83,8 @@ def generate():
         # Get 'automateYoutubeUpload' from the request data and default to False if not provided
         automate_youtube_upload = data.get('automateYoutubeUpload', False)
 
+        visibility = data.get('visibility', 'private')
+
         # Get the ZIP Url of the songs
         # songs_zip_url = data.get('zipUrl')
 
@@ -327,7 +329,7 @@ def generate():
             if not SKIP_YT_UPLOAD:
                 # Choose the appropriate category ID for your videos
                 video_category_id = "28"  # Science & Technology
-                privacyStatus = "private"  # "public", "private", "unlisted"
+                privacyStatus = visibility  # "public", "private", "unlisted"
                 video_metadata = {
                     'video_path': os.path.abspath(f"../temp/{final_video_path}"),
                     'title': title,
