@@ -169,8 +169,8 @@ def get_search_terms(video_subject: str, amount: int, script: str, ai_model: str
     YOU MUST NOT RETURN ANYTHING ELSE. 
     YOU MUST NOT RETURN THE SCRIPT.
     
-    The search terms must be related to the subject of the video. but do not make it too specific for example if asked for nile river we can search for river, water... and when for a specific road we can use just the road word to not narrow down to much on the results
-    The search terms shout not be too specific so that it became deficult to find clips.
+    The search terms must be related to the subject of the video. 
+    
     Here is an example of a JSON-Array of strings:
     ['search term 1', 'search term 2', 'search term 3']
     Do not write any thing else around it like \```json ['search term 1', 'search term 2', 'search term 3'] 
@@ -178,7 +178,7 @@ def get_search_terms(video_subject: str, amount: int, script: str, ai_model: str
     For context, here is the full text: 
     {script}
     """
-
+#but do not make it too specific for example if asked for nile river we can search for river, water... and when for a specific road we can use just the road word to not narrow down to much on the results The search terms shout not be too specific so that it became deficult to find clips.
     # Generate search terms
     response = generate_response(prompt, ai_model)
     print(response)
