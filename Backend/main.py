@@ -314,6 +314,8 @@ def generate():
         else:
             video_clip.write_videofile(f"../{final_video_path}", threads=n_threads or 1)
 
+        uploadStatus = ''
+
         if automate_youtube_upload:
             # Start Youtube Uploader
             # Check if the CLIENT_SECRETS_FILE exists
@@ -353,6 +355,7 @@ def generate():
                         privacy_status=video_metadata['privacyStatus']
                     )
                     print(f"Uploaded video ID: {video_response.get('id')}")
+                    uploadStatus = 'uploaded to YouTube!'
                 except HttpError as e:
                     print(f"An HTTP error {e.resp.status} occurred:\n{e.content}")
 
@@ -376,11 +379,15 @@ def generate():
         GENERATING = False
 
         # Return JSON
+        response_message = "Video generated! See ShortsMaker/output.mp4 for result."
+        if uploadStatus:
+            response_message += f"Video generated and {uploadStatus}"
+        
         return jsonify(
             {
-                "status": "success",
-                "message": "Video generated! See ShortsMaker/output.mp4 for result.",
-                "data": final_video_path,
+            "status": "success",
+            "message": response_message,
+            "data": final_video_path,
             }
         )
     except Exception as err:
