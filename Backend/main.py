@@ -335,7 +335,7 @@ def generate():
                 video_category_id = catID  # Science & Technology
                 privacyStatus = visibility  # "public", "private", "unlisted"
                 video_metadata = {
-                    'video_path': os.path.abspath(f"../temp/{final_video_path}"),
+                    'video_path': os.path.abspath(f"../{final_video_path}"),
                     'title': title,
                     'description': description,
                     'category': video_category_id,
